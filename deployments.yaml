@@ -1,0 +1,541 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "5"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"frontend","namespace":"default"},"spec":{"replicas":2,"selector":{"matchLabels":{"app":"frontend"}},"template":{"metadata":{"labels":{"app":"frontend"}},"spec":{"containers":[{"image":"10.10.10.10:5000/frontend:v1","name":"frontend","ports":[{"containerPort":80}]}]}}}}
+    creationTimestamp: "2025-12-26T05:39:33Z"
+    generation: 5
+    name: frontend
+    namespace: default
+    resourceVersion: "87162"
+    uid: 86a44244-e9f2-4705-95b6-030fdca0db77
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 2
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: frontend
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-12-26T07:57:26Z"
+        creationTimestamp: null
+        labels:
+          app: frontend
+      spec:
+        containers:
+        - image: 10.10.10.10:5000/frontend:v2
+          imagePullPolicy: IfNotPresent
+          name: frontend
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 2
+    conditions:
+    - lastTransitionTime: "2025-12-26T08:06:28Z"
+      lastUpdateTime: "2025-12-26T08:06:28Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2025-12-26T06:13:46Z"
+      lastUpdateTime: "2025-12-26T08:08:33Z"
+      message: ReplicaSet "frontend-7f7bbb578b" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 5
+    readyReplicas: 2
+    replicas: 2
+    updatedReplicas: 2
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "5"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"gateway-service","namespace":"default"},"spec":{"replicas":2,"selector":{"matchLabels":{"app":"gateway-service"}},"template":{"metadata":{"labels":{"app":"gateway-service"}},"spec":{"containers":[{"env":[{"name":"USER_SERVICE_URL","value":"http://user-service:8081"},{"name":"PRODUCT_SERVICE_URL","value":"http://product-service:8082"},{"name":"ORDER_SERVICE_URL","value":"http://order-service:8083"},{"name":"PAYMENT_SERVICE_URL","value":"http://payment-service:8084"}],"image":"10.10.10.10:5000/gateway-service:v1","name":"gateway-service","ports":[{"containerPort":9091}]}]}}}}
+    creationTimestamp: "2025-12-26T05:39:30Z"
+    generation: 5
+    name: gateway-service
+    namespace: default
+    resourceVersion: "77200"
+    uid: 08001d1f-55d7-4670-b04e-2bce57a9d1f7
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 2
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: gateway-service
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-12-26T06:51:19Z"
+        creationTimestamp: null
+        labels:
+          app: gateway-service
+      spec:
+        containers:
+        - env:
+          - name: SPRING_CONFIG_LOCATION
+            value: file:/app/config/application.yml
+          image: 10.10.10.10:5000/gateway-service:v1
+          imagePullPolicy: IfNotPresent
+          name: gateway-service
+          ports:
+          - containerPort: 9091
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /app/config
+            name: config-volume
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: gateway-config
+          name: config-volume
+  status:
+    availableReplicas: 2
+    conditions:
+    - lastTransitionTime: "2025-12-26T06:43:00Z"
+      lastUpdateTime: "2025-12-26T06:43:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2025-12-26T06:07:41Z"
+      lastUpdateTime: "2025-12-26T06:51:26Z"
+      message: ReplicaSet "gateway-service-5d79f499f" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 5
+    readyReplicas: 2
+    replicas: 2
+    updatedReplicas: 2
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      meta.helm.sh/release-name: nfs-provisioner
+      meta.helm.sh/release-namespace: default
+    creationTimestamp: "2025-12-26T05:18:44Z"
+    generation: 1
+    labels:
+      app: nfs-subdir-external-provisioner
+      app.kubernetes.io/managed-by: Helm
+      chart: nfs-subdir-external-provisioner-4.0.18
+      heritage: Helm
+      release: nfs-provisioner
+    name: nfs-provisioner-nfs-subdir-external-provisioner
+    namespace: default
+    resourceVersion: "83006"
+    uid: 83ca8c52-d4cc-49b4-9842-628324e26901
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: nfs-subdir-external-provisioner
+        release: nfs-provisioner
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: nfs-subdir-external-provisioner
+          release: nfs-provisioner
+      spec:
+        containers:
+        - env:
+          - name: PROVISIONER_NAME
+            value: cluster.local/nfs-provisioner-nfs-subdir-external-provisioner
+          - name: NFS_SERVER
+            value: 10.10.10.10
+          - name: NFS_PATH
+            value: /nfs/data
+          image: registry.k8s.io/sig-storage/nfs-subdir-external-provisioner:v4.0.2
+          imagePullPolicy: IfNotPresent
+          name: nfs-subdir-external-provisioner
+          resources: {}
+          securityContext: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /persistentvolumes
+            name: nfs-subdir-external-provisioner-root
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: nfs-provisioner-nfs-subdir-external-provisioner
+        serviceAccountName: nfs-provisioner-nfs-subdir-external-provisioner
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: nfs-subdir-external-provisioner-root
+          nfs:
+            path: /nfs/data
+            server: 10.10.10.10
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-12-26T05:18:44Z"
+      lastUpdateTime: "2025-12-26T05:18:55Z"
+      message: ReplicaSet "nfs-provisioner-nfs-subdir-external-provisioner-85bb97466c"
+        has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2025-12-26T07:37:04Z"
+      lastUpdateTime: "2025-12-26T07:37:04Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "3"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"order-service","namespace":"default"},"spec":{"replicas":2,"selector":{"matchLabels":{"app":"order-service"}},"template":{"metadata":{"labels":{"app":"order-service"}},"spec":{"containers":[{"env":[{"name":"SPRING_DATASOURCE_URL","value":"jdbc:mysql://mysql:3306/order_db?useSSL=false\u0026serverTimezone=Asia/Seoul\u0026allowPublicKeyRetrieval=true"},{"name":"SPRING_DATASOURCE_USERNAME","value":"root"},{"name":"SPRING_DATASOURCE_PASSWORD","value":"root1234"}],"image":"10.10.10.10:5000/order-service:v1","name":"order-service","ports":[{"containerPort":8083}]}]}}}}
+    creationTimestamp: "2025-12-26T05:39:31Z"
+    generation: 3
+    name: order-service
+    namespace: default
+    resourceVersion: "80737"
+    uid: 199f53e3-8c5d-4803-bab0-4de78a34b049
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 2
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: order-service
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: order-service
+      spec:
+        containers:
+        - env:
+          - name: SPRING_DATASOURCE_URL
+            value: jdbc:mysql://mysql:3306/order_db?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+          - name: SPRING_DATASOURCE_USERNAME
+            value: root
+          - name: SPRING_DATASOURCE_PASSWORD
+            value: root1234
+          - name: SERVICE_USER_URL
+            value: http://user-service:8081
+          - name: SERVICE_PRODUCT_URL
+            value: http://product-service:8082
+          image: 10.10.10.10:5000/order-service:v1
+          imagePullPolicy: IfNotPresent
+          name: order-service
+          ports:
+          - containerPort: 8083
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 2
+    conditions:
+    - lastTransitionTime: "2025-12-26T06:14:45Z"
+      lastUpdateTime: "2025-12-26T06:14:45Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2025-12-26T06:05:31Z"
+      lastUpdateTime: "2025-12-26T07:15:56Z"
+      message: ReplicaSet "order-service-5d849b778" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 3
+    readyReplicas: 2
+    replicas: 2
+    updatedReplicas: 2
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"payment-service","namespace":"default"},"spec":{"replicas":2,"selector":{"matchLabels":{"app":"payment-service"}},"template":{"metadata":{"labels":{"app":"payment-service"}},"spec":{"containers":[{"env":[{"name":"SPRING_DATASOURCE_URL","value":"jdbc:mysql://mysql:3306/payment_db?useSSL=false\u0026serverTimezone=Asia/Seoul\u0026allowPublicKeyRetrieval=true"},{"name":"SPRING_DATASOURCE_USERNAME","value":"root"},{"name":"SPRING_DATASOURCE_PASSWORD","value":"root1234"}],"image":"10.10.10.10:5000/payment-service:v1","name":"payment-service","ports":[{"containerPort":8084}]}]}}}}
+    creationTimestamp: "2025-12-26T05:39:32Z"
+    generation: 1
+    name: payment-service
+    namespace: default
+    resourceVersion: "71999"
+    uid: 45dbb5f8-c628-4cb3-bada-dad5f8641cfa
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 2
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: payment-service
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: payment-service
+      spec:
+        containers:
+        - env:
+          - name: SPRING_DATASOURCE_URL
+            value: jdbc:mysql://mysql:3306/payment_db?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+          - name: SPRING_DATASOURCE_USERNAME
+            value: root
+          - name: SPRING_DATASOURCE_PASSWORD
+            value: root1234
+          image: 10.10.10.10:5000/payment-service:v1
+          imagePullPolicy: IfNotPresent
+          name: payment-service
+          ports:
+          - containerPort: 8084
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 2
+    conditions:
+    - lastTransitionTime: "2025-12-26T06:14:56Z"
+      lastUpdateTime: "2025-12-26T06:14:56Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2025-12-26T06:07:28Z"
+      lastUpdateTime: "2025-12-26T06:14:56Z"
+      message: ReplicaSet "payment-service-767d6775b" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+    readyReplicas: 2
+    replicas: 2
+    updatedReplicas: 2
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "3"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"product-service","namespace":"default"},"spec":{"replicas":2,"selector":{"matchLabels":{"app":"product-service"}},"template":{"metadata":{"labels":{"app":"product-service"}},"spec":{"containers":[{"env":[{"name":"SPRING_DATASOURCE_URL","value":"jdbc:mysql://mysql:3306/product_db?useSSL=false\u0026serverTimezone=Asia/Seoul\u0026allowPublicKeyRetrieval=true"},{"name":"SPRING_DATASOURCE_USERNAME","value":"root"},{"name":"SPRING_DATASOURCE_PASSWORD","value":"root1234"},{"name":"FILE_UPLOAD_DIR","value":"/app/uploads/products"}],"image":"10.10.10.10:5000/product-service:v1","name":"product-service","ports":[{"containerPort":8082}],"volumeMounts":[{"mountPath":"/app/uploads/products","name":"product-images"}]}],"volumes":[{"name":"product-images","persistentVolumeClaim":{"claimName":"product-images-pvc"}}]}}}}
+    creationTimestamp: "2025-12-26T05:39:31Z"
+    generation: 3
+    name: product-service
+    namespace: default
+    resourceVersion: "79015"
+    uid: 7cf8b748-eec9-4e1b-8a24-911830d88155
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 2
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: product-service
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: product-service
+      spec:
+        containers:
+        - env:
+          - name: SPRING_DATASOURCE_URL
+            value: jdbc:mysql://mysql:3306/product_db?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+          - name: SPRING_DATASOURCE_USERNAME
+            value: root
+          - name: SPRING_DATASOURCE_PASSWORD
+            value: root1234
+          - name: FILE_UPLOAD_DIR
+            value: /app/uploads/products
+          - name: IMAGE_BASE_URL
+            value: http://shop.local/images/products
+          - name: FILE_BASEURL
+            value: http://shop.local/images/products
+          image: 10.10.10.10:5000/product-service:v1
+          imagePullPolicy: IfNotPresent
+          name: product-service
+          ports:
+          - containerPort: 8082
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /app/uploads/products
+            name: product-images
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: product-images
+          persistentVolumeClaim:
+            claimName: product-images-pvc
+  status:
+    availableReplicas: 2
+    conditions:
+    - lastTransitionTime: "2025-12-26T06:14:50Z"
+      lastUpdateTime: "2025-12-26T06:14:50Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2025-12-26T06:07:36Z"
+      lastUpdateTime: "2025-12-26T07:03:52Z"
+      message: ReplicaSet "product-service-7b57bd9cd4" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 3
+    readyReplicas: 2
+    replicas: 2
+    updatedReplicas: 2
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"user-service","namespace":"default"},"spec":{"replicas":2,"selector":{"matchLabels":{"app":"user-service"}},"template":{"metadata":{"labels":{"app":"user-service"}},"spec":{"containers":[{"env":[{"name":"SPRING_DATASOURCE_URL","value":"jdbc:mysql://mysql:3306/user_db?useSSL=false\u0026serverTimezone=Asia/Seoul\u0026allowPublicKeyRetrieval=true"},{"name":"SPRING_DATASOURCE_USERNAME","value":"root"},{"name":"SPRING_DATASOURCE_PASSWORD","value":"root1234"}],"image":"10.10.10.10:5000/user-service:v1","name":"user-service","ports":[{"containerPort":8081}]}]}}}}
+    creationTimestamp: "2025-12-26T05:39:30Z"
+    generation: 1
+    name: user-service
+    namespace: default
+    resourceVersion: "72013"
+    uid: f21b5211-2c51-4c7a-a0bc-59fee59ba1cc
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 2
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: user-service
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: user-service
+      spec:
+        containers:
+        - env:
+          - name: SPRING_DATASOURCE_URL
+            value: jdbc:mysql://mysql:3306/user_db?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+          - name: SPRING_DATASOURCE_USERNAME
+            value: root
+          - name: SPRING_DATASOURCE_PASSWORD
+            value: root1234
+          image: 10.10.10.10:5000/user-service:v1
+          imagePullPolicy: IfNotPresent
+          name: user-service
+          ports:
+          - containerPort: 8081
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 2
+    conditions:
+    - lastTransitionTime: "2025-12-26T06:15:00Z"
+      lastUpdateTime: "2025-12-26T06:15:00Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2025-12-26T06:07:31Z"
+      lastUpdateTime: "2025-12-26T06:15:00Z"
+      message: ReplicaSet "user-service-79cbf78df" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+    readyReplicas: 2
+    replicas: 2
+    updatedReplicas: 2
+kind: List
+metadata:
+  resourceVersion: ""
