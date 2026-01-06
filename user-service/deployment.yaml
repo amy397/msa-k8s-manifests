@@ -18,6 +18,16 @@ spec:
           image: ghcr.io/amy397/user-service:c42416b
           ports:
             - containerPort: 8081
+          readinessProbe:
+            tcpSocket:
+              port: 8081
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 8081
+            initialDelaySeconds: 120
+            periodSeconds: 20
           resources:
             requests:
               cpu: "100m"
