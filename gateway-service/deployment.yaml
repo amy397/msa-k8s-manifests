@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: gateway-service
-          image: ghcr.io/amy397/gateway-service:latest
+          image: ghcr.io/amy397/gateway-service:a0d8261
           ports:
             - containerPort: 9091
           env:
